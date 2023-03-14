@@ -66,7 +66,7 @@ int main()
     int i=0;
 
     ifstream inputFile;
-    inputFile.open("C:\\Users\\CHAMA COMPUTERS\\Documents\\GitHub\\LSEG practice\\orders.csv");
+    inputFile.open("orders.csv");
     string line = "";
 
     vector<Order> orders;
