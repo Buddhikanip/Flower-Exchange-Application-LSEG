@@ -55,40 +55,14 @@ public:
     string Trader_Id;
 };
 
-void displayOrders(vector<Order> &orders)
+void get_data(vector<Order>& orders)
 {
 
-    for (auto order : orders)
-    {
-        order.display();
-    }
-}
-
-void out(vector<Order> &orders)
-{
-    // ofstream file("execution_rep.csv", ios::app);
-    ofstream file("execution_rep.csv", ofstream::trunc);
-    if (file.is_open())
-    {
-        file << "Execution_Rep.csv" << endl;
-        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID" << endl;
-        for (auto order : orders)
-        {
-            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id << endl;
-        }
-    }
-    file.close();
-}
-
-int main()
-{
     int i = 0;
 
     ifstream inputFile;
     inputFile.open("orders.csv");
     string line = "";
-
-    vector<Order> orders;
 
     getline(inputFile, line);
     line = "";
@@ -127,6 +101,42 @@ int main()
         orders.push_back(order);
         line = "";
     }
+
+}
+
+void displayOrders(vector<Order> &orders)
+{
+
+    for (auto order : orders)
+    {
+        order.display();
+    }
+}
+
+void out(vector<Order> &orders)
+{
+    // ofstream file("execution_rep.csv", ios::app);
+    ofstream file("execution_rep.csv", ofstream::trunc);
+    if (file.is_open())
+    {
+        file << "Execution_Rep.csv" << endl;
+        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID" << endl;
+        for (auto order : orders)
+        {
+            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id << endl;
+        }
+    }
+    file.close();
+}
+
+int main()
+{
+    
+    
+
+    vector<Order> orders;
+
+    get_data(orders);
 
     displayOrders(orders);
 
