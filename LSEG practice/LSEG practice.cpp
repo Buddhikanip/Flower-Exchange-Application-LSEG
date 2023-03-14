@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include<string.h>
+#include <string.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -60,20 +60,20 @@ public:
     }
 };
 
-int validation(string client_order_id, string instrument, int side, int quantity, double price, string trader_id, vector<Order>& orders)
+int validation(string client_order_id, string instrument, int side, int quantity, double price, string trader_id, vector<Order> &orders)
 {
     // client_order_id validation
     if ((client_order_id.length() > 1) && (client_order_id.length() < 8))
     {
-        int fint = 0, fchar = 0,fother=0;
-        for (int i = 0; i < client_order_id.length(); i++) {
+        int fint = 0, fchar = 0, fother = 0;
+        for (int i = 0; i < client_order_id.length(); i++)
+        {
             if (isdigit(client_order_id[i]))
                 fint++;
+            else if (isalpha(client_order_id[i]))
+                fchar++;
             else
-                if (isalpha(client_order_id[i]))
-                    fchar++;
-                else
-                    fother++;
+                fother++;
         }
         if (!(fint > 0 && fchar > 0 && fother == 0))
             return -1;
@@ -95,11 +95,11 @@ int validation(string client_order_id, string instrument, int side, int quantity
                     if (instrument != "Orchid")
                         return -2;
 
-    //side validation
+    // side validation
     if (!(side == 1 || side == 2))
         return -3;
 
-    //price validation
+    // price validation
     if (price <= 0.0)
         return -4;
 
@@ -108,7 +108,7 @@ int validation(string client_order_id, string instrument, int side, int quantity
     {
         if (!(quantity % 10 == 0))
             return -5;
-    }        
+    }
     else
         return -5;
 
@@ -138,7 +138,7 @@ void get_data(vector<Order> &orders)
         string Trader_Id;
         string tempString;
         string exec_status = "New";
-        string reason="";
+        string reason = "";
 
         getline(inputString, Client_Order_Id, ',');
         getline(inputString, Instrument, ',');
@@ -158,14 +158,14 @@ void get_data(vector<Order> &orders)
 
         if (reason_int == 1)
         {
-            Order order(i, Client_Order_Id, Instrument, Side,exec_status, Quantity, Price, Trader_Id,reason);
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
             orders.push_back(order);
         }
-        else if(reason_int == -1)
+        else if (reason_int == -1)
         {
             exec_status = "Reject";
             reason = "Invalid Client ID";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id,reason);
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
             orders.push_back(order);
         }
         else if (reason_int == -2)
@@ -196,7 +196,7 @@ void get_data(vector<Order> &orders)
             Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
             orders.push_back(order);
         }
-        
+
         line = "";
     }
 }
@@ -219,7 +219,7 @@ void set_data(vector<Order> &orders)
         file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID,Reason" << endl;
         for (auto order : orders)
         {
-            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id<<"," << order.Reason << endl;
+            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id << "," << order.Reason << endl;
         }
     }
     file.close();
