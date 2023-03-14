@@ -61,15 +61,17 @@ int validation(string client_order_id, string instrument, int side, int quantity
     // client_order_id validation
     if ((client_order_id.length() > 1) && (client_order_id.length() < 8))
     {
-        int fint = 0, fchar = 0;
+        int fint = 0, fchar = 0,fother=0;
         for (int i = 0; i < client_order_id.length(); i++) {
             if (isdigit(client_order_id[i]))
                 fint++;
             else
                 if (isalpha(client_order_id[i]))
                     fchar++;
+                else
+                    fother++;
         }
-        if (!(fint > 0 && fchar > 0))
+        if (!(fint > 0 && fchar > 0 && fother == 0))
             return 0;
 
         for (auto order : orders)
