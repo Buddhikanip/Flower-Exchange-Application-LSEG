@@ -54,11 +54,28 @@ public:
 
 };
 
+
 void displayOrders(vector<Order>& orders) {
 
     for (auto order : orders) {
         order.display();
     }
+}
+
+void out(vector<Order>& orders)
+{
+    //ofstream file("execution_rep.csv", ios::app);
+    ofstream file("execution_rep.csv", ofstream::trunc);
+    if (file.is_open()) {
+        file << "Execution_Rep.csv" << endl;
+        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID" << endl;
+            for (auto order : orders)
+            {
+                file << order.Order_Id << "," <<order.Client_Order_Id<<","<<order.Instrument<<","<<order.Side<<","<<order.Exec_Status<<","<<order.Quantity<<","<<order.Price<<","<<order.Trader_Id << endl;
+            }
+    }
+    file.close();
+    
 }
 
 int main()
@@ -109,4 +126,7 @@ int main()
     }
 
     displayOrders(orders);
+
+    out(orders);
+ 
 }
