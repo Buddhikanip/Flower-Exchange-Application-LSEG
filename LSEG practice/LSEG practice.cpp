@@ -2,7 +2,8 @@
 //
 
 #include <iostream>
-#include <string.h>
+// #include <string.h>
+#include <iomanip>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -19,7 +20,7 @@ public:
     int Side;
     string Exec_Status;
     int Quantity;
-    float Price;
+    double Price;
     string Trader_Id;
     string Reason;
 
@@ -53,7 +54,7 @@ public:
         cout << "              Side : " << Side << endl;
         cout << "       Exec_Status : " << Exec_Status << endl;
         cout << "          Quantity : " << Quantity << endl;
-        cout << "             Price : " << Price << endl;
+        cout << "             Price : " << fixed << setprecision(2) << Price << endl;
         cout << "         Trader_Id : " << Trader_Id << endl;
         cout << "            Reason : " << Reason << endl;
         cout << endl;
@@ -100,7 +101,7 @@ int validation(string client_order_id, string instrument, int side, int quantity
         return -3;
 
     // price validation
-    if (price <= 0.0)
+    if (price <= 0.00)
         return -4;
 
     // quantity validation
@@ -134,7 +135,7 @@ void get_data(vector<Order> &orders)
         string Instrument;
         int Side;
         int Quantity;
-        float Price;
+        double Price;
         string Trader_Id;
         string tempString;
         string exec_status = "New";
@@ -150,7 +151,8 @@ void get_data(vector<Order> &orders)
         Quantity = atoi(tempString.c_str());
 
         getline(inputString, tempString, ',');
-        Price = atof(tempString.c_str());
+        //Price = atof(tempString.c_str());
+        Price = stold(tempString);
 
         getline(inputString, Trader_Id, ',');
 
@@ -219,7 +221,7 @@ void set_data(vector<Order> &orders)
         file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID,Reason" << endl;
         for (auto order : orders)
         {
-            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id << "," << order.Reason << endl;
+            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << fixed << setprecision(2) << order.Price << "," << order.Trader_Id << "," << order.Reason << endl;
         }
     }
     file.close();
