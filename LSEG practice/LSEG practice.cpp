@@ -9,19 +9,20 @@
 
 using namespace std;
 
-struct Order {
+struct Order
+{
 public:
     Order(
         int i,
         string client_order_id,
         string instrument,
         int side,
-        //string exec_status,
+        // string exec_status,
         int quantity,
         double price,
-        string trader_id
-    ) {
-        Order_Id ="odd" + to_string(i);
+        string trader_id)
+    {
+        Order_Id = "odd" + to_string(i);
         Client_Order_Id = client_order_id;
         Instrument = instrument;
         Side = side;
@@ -31,7 +32,8 @@ public:
         Trader_Id = trader_id;
     }
 
-    void display() {
+    void display()
+    {
         cout << "          Order_Id : " << Order_Id << endl;
         cout << "   Client_Order_Id : " << Client_Order_Id << endl;
         cout << "        Instrument : " << Instrument << endl;
@@ -51,36 +53,36 @@ public:
     int Quantity;
     float Price;
     string Trader_Id;
-
 };
 
+void displayOrders(vector<Order> &orders)
+{
 
-void displayOrders(vector<Order>& orders) {
-
-    for (auto order : orders) {
+    for (auto order : orders)
+    {
         order.display();
     }
 }
 
-void out(vector<Order>& orders)
+void out(vector<Order> &orders)
 {
-    //ofstream file("execution_rep.csv", ios::app);
+    // ofstream file("execution_rep.csv", ios::app);
     ofstream file("execution_rep.csv", ofstream::trunc);
-    if (file.is_open()) {
+    if (file.is_open())
+    {
         file << "Execution_Rep.csv" << endl;
         file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID" << endl;
-            for (auto order : orders)
-            {
-                file << order.Order_Id << "," <<order.Client_Order_Id<<","<<order.Instrument<<","<<order.Side<<","<<order.Exec_Status<<","<<order.Quantity<<","<<order.Price<<","<<order.Trader_Id << endl;
-            }
+        for (auto order : orders)
+        {
+            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id << endl;
+        }
     }
     file.close();
-    
 }
 
 int main()
 {
-    int i=0;
+    int i = 0;
 
     ifstream inputFile;
     inputFile.open("orders.csv");
@@ -92,7 +94,8 @@ int main()
     line = "";
     getline(inputFile, line);
     line = "";
-    while (getline(inputFile, line)) {
+    while (getline(inputFile, line))
+    {
 
         stringstream inputString(line);
 
@@ -120,7 +123,7 @@ int main()
 
         getline(inputString, Trader_Id, ',');
 
-        Order order(i ,Client_Order_Id, Instrument,Side, Quantity, Price, Trader_Id);
+        Order order(i, Client_Order_Id, Instrument, Side, Quantity, Price, Trader_Id);
         orders.push_back(order);
         line = "";
     }
@@ -128,5 +131,4 @@ int main()
     displayOrders(orders);
 
     out(orders);
- 
 }
