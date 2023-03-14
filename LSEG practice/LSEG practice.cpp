@@ -10,8 +10,9 @@
 
 using namespace std;
 
-struct Order
+class Order
 {
+public:
     string Order_Id;
     string Client_Order_Id;
     string Instrument;
@@ -20,8 +21,8 @@ struct Order
     int Quantity;
     float Price;
     string Trader_Id;
+    string Reason;
 
-public:
     Order(
         int i,
         string client_order_id,
@@ -30,7 +31,8 @@ public:
         string exec_status,
         int quantity,
         double price,
-        string trader_id)
+        string trader_id,
+        string reason)
     {
         Order_Id = "odd" + to_string(i);
         Client_Order_Id = client_order_id;
@@ -40,6 +42,7 @@ public:
         Quantity = quantity;
         Price = price;
         Trader_Id = trader_id;
+        Reason = reason;
     }
 
     void display()
@@ -52,6 +55,7 @@ public:
         cout << "          Quantity : " << Quantity << endl;
         cout << "             Price : " << Price << endl;
         cout << "         Trader_Id : " << Trader_Id << endl;
+        cout << "            Reason : " << Reason << endl;
         cout << endl;
     }
 };
@@ -72,16 +76,16 @@ int validation(string client_order_id, string instrument, int side, int quantity
                     fother++;
         }
         if (!(fint > 0 && fchar > 0 && fother == 0))
-            return 0;
+            return -1;
 
         for (auto order : orders)
         {
             if (order.Client_Order_Id == client_order_id)
-                return 0;
+                return -1;
         }
     }
     else
-        return 0;
+        return -1;
 
     // instrument validation
     if (instrument != "Rose")
@@ -89,24 +93,24 @@ int validation(string client_order_id, string instrument, int side, int quantity
             if (instrument != "Lotus")
                 if (instrument != "Tulip")
                     if (instrument != "Orchid")
-                        return 0;
+                        return -2;
 
     //side validation
     if (!(side == 1 || side == 2))
-        return 0;
+        return -3;
 
     //price validation
     if (price <= 0.0)
-        return 0;
+        return -4;
 
     // quantity validation
     if (quantity <= 1000 && quantity >= 10)
     {
         if (!(quantity % 10 == 0))
-            return 0;
+            return -5;
     }        
     else
-        return 0;
+        return -5;
 
     return 1;
 }
@@ -134,6 +138,7 @@ void get_data(vector<Order> &orders)
         string Trader_Id;
         string tempString;
         string exec_status = "New";
+        string reason="";
 
         getline(inputString, Client_Order_Id, ',');
         getline(inputString, Instrument, ',');
@@ -149,15 +154,46 @@ void get_data(vector<Order> &orders)
 
         getline(inputString, Trader_Id, ',');
 
-        if (validation(Client_Order_Id, Instrument, Side, Quantity, Price, Trader_Id,orders))
+        int reason_int = validation(Client_Order_Id, Instrument, Side, Quantity, Price, Trader_Id, orders);
+
+        if (reason_int == 1)
         {
-            Order order(i, Client_Order_Id, Instrument, Side,exec_status, Quantity, Price, Trader_Id);
+            Order order(i, Client_Order_Id, Instrument, Side,exec_status, Quantity, Price, Trader_Id,reason);
             orders.push_back(order);
         }
-        else
+        else if(reason_int == -1)
         {
             exec_status = "Reject";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id);
+            reason = "Invalid Client ID";
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id,reason);
+            orders.push_back(order);
+        }
+        else if (reason_int == -2)
+        {
+            exec_status = "Reject";
+            reason = "Invalid Instrument";
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
+            orders.push_back(order);
+        }
+        else if (reason_int == -3)
+        {
+            exec_status = "Reject";
+            reason = "Invalid Side";
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
+            orders.push_back(order);
+        }
+        else if (reason_int == -4)
+        {
+            exec_status = "Reject";
+            reason = "Invalid Price";
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
+            orders.push_back(order);
+        }
+        else if (reason_int == -5)
+        {
+            exec_status = "Reject";
+            reason = "Invalid Size";
+            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
             orders.push_back(order);
         }
         
@@ -180,10 +216,10 @@ void set_data(vector<Order> &orders)
     if (file.is_open())
     {
         file << "Execution_Rep.csv" << endl;
-        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID" << endl;
+        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID,Reason" << endl;
         for (auto order : orders)
         {
-            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id << endl;
+            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << order.Price << "," << order.Trader_Id<<"," << order.Reason << endl;
         }
     }
     file.close();
