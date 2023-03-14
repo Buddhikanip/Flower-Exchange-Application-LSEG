@@ -25,7 +25,7 @@ public:
         Client_Order_Id = client_order_id;
         Instrument = instrument;
         Side = side;
-        //Exec_Status = exec_status;
+        Exec_Status = "New";
         Quantity = quantity;
         Price = price;
         Trader_Id = trader_id;
@@ -36,7 +36,7 @@ public:
         cout << "   Client_Order_Id : " << Client_Order_Id << endl;
         cout << "        Instrument : " << Instrument << endl;
         cout << "              Side : " << Side << endl;
-        //cout << "       Exec_Status : " << Exec_Status << endl;
+        cout << "       Exec_Status : " << Exec_Status << endl;
         cout << "          Quantity : " << Quantity << endl;
         cout << "             Price : " << Price << endl;
         cout << "         Trader_Id : " << Trader_Id << endl;
@@ -47,7 +47,7 @@ public:
     string Client_Order_Id;
     string Instrument;
     int Side;
-    //string Exec_Status;
+    string Exec_Status;
     int Quantity;
     float Price;
     string Trader_Id;
@@ -66,7 +66,7 @@ int main()
     int i=0;
 
     ifstream inputFile;
-    inputFile.open("C:\\Users\\CHAMA COMPUTERS\\Documents\\GitHub\\LSEG practice\\orders.csv");
+    inputFile.open("orders.csv");
     string line = "";
 
     vector<Order> orders;
