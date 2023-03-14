@@ -18,22 +18,14 @@ public:
     string Client_Order_Id;
     string Instrument;
     int Side;
-    string Exec_Status;
+    int Exec_Status;
     int Quantity;
     double Price;
     string Trader_Id;
     string Reason;
+    string Transaction_Time;
 
-    Order(
-        int i,
-        string client_order_id,
-        string instrument,
-        int side,
-        string exec_status,
-        int quantity,
-        double price,
-        string trader_id,
-        string reason)
+    Order(int i,string client_order_id,string instrument,int side,int exec_status,int quantity,double price,string trader_id,string reason)
     {
         Order_Id = "odd" + to_string(i);
         Client_Order_Id = client_order_id;
@@ -57,6 +49,7 @@ public:
         cout << "             Price : " << fixed << setprecision(2) << Price << endl;
         cout << "         Trader_Id : " << Trader_Id << endl;
         cout << "            Reason : " << Reason << endl;
+        cout << "  Transaction_Time : " << Transaction_Time << endl;
         cout << endl;
     }
 };
@@ -138,7 +131,7 @@ void get_data(vector<Order> &orders)
         double Price;
         string Trader_Id;
         string tempString;
-        string exec_status = "New";
+        int exec_status = 0;
         string reason = "";
 
         getline(inputString, Client_Order_Id, ',');
@@ -158,46 +151,33 @@ void get_data(vector<Order> &orders)
 
         int reason_int = validation(Client_Order_Id, Instrument, Side, Quantity, Price, Trader_Id, orders);
 
-        if (reason_int == 1)
+        if (reason_int == -1)
         {
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
-            orders.push_back(order);
-        }
-        else if (reason_int == -1)
-        {
-            exec_status = "Reject";
+            exec_status = 1;
             reason = "Invalid Client ID";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
-            orders.push_back(order);
         }
         else if (reason_int == -2)
         {
-            exec_status = "Reject";
+            exec_status = 1;
             reason = "Invalid Instrument";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
-            orders.push_back(order);
         }
         else if (reason_int == -3)
         {
-            exec_status = "Reject";
+            exec_status = 1;
             reason = "Invalid Side";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
-            orders.push_back(order);
         }
         else if (reason_int == -4)
         {
-            exec_status = "Reject";
+            exec_status = 1;
             reason = "Invalid Price";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
-            orders.push_back(order);
         }
         else if (reason_int == -5)
         {
-            exec_status = "Reject";
+            exec_status = 1;
             reason = "Invalid Size";
-            Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
-            orders.push_back(order);
         }
+        Order order(i, Client_Order_Id, Instrument, Side, exec_status, Quantity, Price, Trader_Id, reason);
+        orders.push_back(order);
 
         line = "";
     }
@@ -218,10 +198,10 @@ void set_data(vector<Order> &orders)
     if (file.is_open())
     {
         file << "Execution_Rep.csv" << endl;
-        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID,Reason" << endl;
+        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID,Reason,Transaction Time" << endl;
         for (auto order : orders)
         {
-            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << fixed << setprecision(2) << order.Price << "," << order.Trader_Id << "," << order.Reason << endl;
+            file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << fixed << setprecision(2) << order.Price << "," << order.Trader_Id << "," << order.Reason<<","<< order.Transaction_Time << endl;
         }
     }
     file.close();
