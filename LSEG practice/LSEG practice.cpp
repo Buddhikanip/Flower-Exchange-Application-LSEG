@@ -147,6 +147,21 @@ void calculation(int i, string client_order_id, string &instrument, int side, in
                     return;
                 }
             }
+            if (sells.Price < price)
+            {
+                if (sells.Quantity == quantity)
+                {
+                    exec_status = 2;
+                    Order order1(i, client_order_id, instrument, side, exec_status, quantity, sells.Price, reason);
+                    set(order1);
+
+                    Order order2(sells.Order_Id, sells.Client_Order_Id, sells.Instrument, sells.Side, 2, sells.Quantity, sells.Price, sells.Reason);
+                    set(order2);
+                    sell.erase(sell.begin() + j);
+
+                    return;
+                }
+            }
         }
     }
     else // sell
@@ -254,15 +269,8 @@ int validation(string instrument, int side, int quantity, double price, string &
         return 0;
     }
 
-    // price validation
-    if (price <= 0.00)
-    {
-        reason = "Invalid Price";
-        return 0;
-    }
-
     // quantity validation
-    if (quantity <= 1000 && quantity >= 10)
+    if (quantity < 1000 && quantity >= 10)
     {
         if (!(quantity % 10 == 0))
         {
@@ -273,6 +281,13 @@ int validation(string instrument, int side, int quantity, double price, string &
     else
     {
         reason = "Invalid Size";
+        return 0;
+    }
+
+    // price validation
+    if (price <= 0.00)
+    {
+        reason = "Invalid Price";
         return 0;
     }
 
