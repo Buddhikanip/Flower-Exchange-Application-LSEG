@@ -1,6 +1,3 @@
-// ParsingCsvDemo.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -25,48 +22,96 @@ public:
     string Reason;
     string Transaction_Time;
 
-    Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price, string reason)
-    {
-        Order_Id = "odd" + to_string(i);
-        Client_Order_Id = client_order_id;
-        Instrument = instrument;
-        Side = side;
-        Exec_Status = exec_status;
-        Quantity = quantity;
-        Price = price;
-        // Trader_Id = trader_id;
-        Reason = reason;
-    }
-    Order(string order_id, string client_order_id, string instrument, int side, int exec_status, int quantity, double price, string reason)
-    {
-        Order_Id = order_id;
-        Client_Order_Id = client_order_id;
-        Instrument = instrument;
-        Side = side;
-        Exec_Status = exec_status;
-        Quantity = quantity;
-        Price = price;
-        // Trader_Id = trader_id;
-        Reason = reason;
-    }
-
-    void display()
-    {
-        cout << "          Order_Id : " << Order_Id << endl;
-        cout << "   Client_Order_Id : " << Client_Order_Id << endl;
-        cout << "        Instrument : " << Instrument << endl;
-        cout << "              Side : " << Side << endl;
-        cout << "       Exec_Status : " << Exec_Status << endl;
-        cout << "          Quantity : " << Quantity << endl;
-        cout << "             Price : " << fixed << setprecision(2) << Price << endl;
-        // cout << "         Trader_Id : " << Trader_Id << endl;
-        cout << "            Reason : " << Reason << endl;
-        cout << "  Transaction_Time : " << Transaction_Time << endl;
-        cout << endl;
-    }
+    Order(int,string,string,int,int,int,double,string);
+    Order(string, string, string, int, int, int, double, string);
+    void display();
+    void write_csv();
+    int validation();
 };
 
-void set(Order order);
+Order::Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price, string reason)
+{
+    Order_Id = "odd" + to_string(i);
+    Client_Order_Id = client_order_id;
+    Instrument = instrument;
+    Side = side;
+    Exec_Status = exec_status;
+    Quantity = quantity;
+    Price = price;
+    // Trader_Id = trader_id;
+    Reason = reason;
+}
+
+void Order::display()
+{
+    cout << "          Order_Id : " << Order_Id << endl;
+    cout << "   Client_Order_Id : " << Client_Order_Id << endl;
+    cout << "        Instrument : " << Instrument << endl;
+    cout << "              Side : " << Side << endl;
+    cout << "       Exec_Status : " << Exec_Status << endl;
+    cout << "          Quantity : " << Quantity << endl;
+    cout << "             Price : " << fixed << setprecision(2) << Price << endl;
+    // cout << "         Trader_Id : " << Trader_Id << endl;
+    cout << "            Reason : " << Reason << endl;
+    cout << "  Transaction_Time : " << Transaction_Time << endl;
+    cout << endl;
+}
+
+void Order::write_csv()
+{
+    display();
+    ofstream file("execution_rep.csv", ios::app);
+    if (file.is_open())
+    {
+        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << Transaction_Time << endl;
+    }
+    file.close();
+}
+
+int Order::validation()
+{
+    // instrument validation
+    if (Instrument != "Rose")
+        if (Instrument != "Lavender")
+            if (Instrument != "Lotus")
+                if (Instrument != "Tulip")
+                    if (Instrument != "Orchid")
+                    {
+                        Reason = "Invalid Instrument";
+                        return 0;
+                    }
+
+    // side validation
+    if (!(Side == 1 || Side == 2))
+    {
+        Reason = "Invalid Side";
+        return 0;
+    }
+
+    // quantity validation
+    if (Quantity < 1000 && Quantity >= 10)
+    {
+        if (!(Quantity % 10 == 0))
+        {
+            Reason = "Invalid Size";
+            return 0;
+        }
+    }
+    else
+    {
+        Reason = "Invalid Size";
+        return 0;
+    }
+
+    // price validation
+    if (Price <= 0.00)
+    {
+        Reason = "Invalid Price";
+        return 0;
+    }
+
+    return 1;
+}
 
 bool buy_compare(Order a, Order b)
 {
@@ -77,94 +122,100 @@ bool sell_compare(Order a, Order b)
     return a.Price < b.Price;
 }
 
-void calculation(int i, string client_order_id, string &instrument, int side, int &exec_status, int quantity, double price, string reason, vector<Order> &buy, vector<Order> &sell)
+void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
 {
-    if (side == 1) // buy
+    if (order.Side == 1) // buy
     {
         if (sell.empty())
         {
-            Order order(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
             buy.push_back(order);
             sort(buy.begin(), buy.end(), buy_compare);
-            if (exec_status != 3)
-                set(order);
+            if (order.Exec_Status != 3)
+                order.write_csv();
             return;
         }
-        // for (auto sells : sell)
         for (int j = 0; j <= sell.size(); j++)
         {
             Order sells = sell[j];
-            if (sells.Instrument != instrument)
+            if (sells.Instrument != order.Instrument)
                 continue;
-            if (sells.Price > price)
+            if (sells.Price > order.Price)
             {
-                Order order(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
                 buy.push_back(order);
                 sort(buy.begin(), buy.end(), buy_compare);
-                if (exec_status != 3)
-                    set(order);
+                if (order.Exec_Status != 3)
+                    order.write_csv();
                 return;
             }
-            else if (sells.Price == price)
+            else if (sells.Price == order.Price)
             {
-                if (sells.Quantity == quantity)
+                if (sells.Quantity == order.Quantity)
                 {
-                    exec_status = 2;
-                    Order order1(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
-                    set(order1);
+                    order.Exec_Status = 2;
+                    order.write_csv();
 
-                    Order order2(sells.Order_Id, sells.Client_Order_Id, sells.Instrument, sells.Side, 2, sells.Quantity, sells.Price, sells.Reason);
-                    set(order2);
+                    sells.Exec_Status = 2;
+                    sells.write_csv();
                     sell.erase(sell.begin() + j);
                     sort(sell.begin(), sell.end(), sell_compare);
 
                     return;
                 }
-                if (sells.Quantity < quantity)
+                if (sells.Quantity < order.Quantity)
                 {
-                    exec_status = 3;
-                    quantity = quantity - sells.Quantity;
-                    Order order1(i, client_order_id, instrument, side, exec_status, sells.Quantity, price, reason);
-                    // buy.push_back(order1);
-                    set(order1);
+                    order.Exec_Status = 3;
+                    order.Quantity = order.Quantity - sells.Quantity;
 
-                    Order order2(sells.Order_Id, sells.Client_Order_Id, sells.Instrument, sells.Side, 2, sells.Quantity, sells.Price, sells.Reason);
-                    set(order2);
+                    Order order_temp = order;
+                    order_temp.Quantity = sells.Quantity;
+                    order_temp.write_csv();
+
+                    sells.Exec_Status = 2;
+                    sells.write_csv();
                     sell.erase(sell.begin() + j);
                     sort(sell.begin(), sell.end(), sell_compare);
 
-                    if (!sell.empty() || quantity != 0)
-                        calculation(i, client_order_id, instrument, side, exec_status, quantity, price, reason, buy, sell);
+                    if (!sell.empty() || order.Quantity != 0)
+                        calculation(order, buy, sell);
 
-                    if (quantity > 0)
+                    if (order.Quantity > 0)
                     {
-                        buy.push_back(order1);
+                        buy.push_back(order);
                         sort(buy.begin(), buy.end(), buy_compare);
                     }
 
                     return;
                 }
-                else
+                else //sells.Quantity > quantity
                 {
-                    // write
+                    order.Exec_Status = 2;
+                    order.write_csv();
+
+                    sells.Quantity = sells.Quantity - order.Quantity;
+                    sells.Exec_Status = 3;
+                    sells.write_csv();
+
+                    return;
                 }
             }
-            else
+            else //sells.Price < price
             {
-                if (sells.Quantity == quantity)
+                if (sells.Quantity == order.Quantity)
                 {
-                    exec_status = 2;
-                    Order order1(i, client_order_id, instrument, side, exec_status, quantity, sells.Price, reason);
-                    set(order1);
+                    order.Exec_Status = 2;
 
-                    Order order2(sells.Order_Id, sells.Client_Order_Id, sells.Instrument, sells.Side, 2, sells.Quantity, sells.Price, sells.Reason);
-                    set(order2);
+                    Order order_temp = order;
+                    order_temp.Price = sells.Price;
+                    order_temp.write_csv();
+
+                    sells.Exec_Status = 2;
+                    sells.write_csv();
                     sell.erase(sell.begin() + j);
                     sort(sell.begin(), sell.end(), sell_compare);
 
                     return;
                 }
-                else if (sells.Quantity > quantity)
+                else if (sells.Quantity > order.Quantity)
                 {
                     // write
                 }
@@ -173,78 +224,80 @@ void calculation(int i, string client_order_id, string &instrument, int side, in
                     // write
                 }
             }
-            if (sells.Price < price)
+            if (sells.Price < order.Price)
             {
-                if (sells.Quantity == quantity)
+                if (sells.Quantity == order.Quantity)
                 {
-                    exec_status = 2;
-                    Order order1(i, client_order_id, instrument, side, exec_status, quantity, sells.Price, reason);
-                    set(order1);
+                    order.Exec_Status = 2;
 
-                    Order order2(sells.Order_Id, sells.Client_Order_Id, sells.Instrument, sells.Side, 2, sells.Quantity, sells.Price, sells.Reason);
-                    set(order2);
+                    Order order_temp = order;
+                    order_temp.Price = sells.Price;
+                    order_temp.write_csv();
+
+                    sells.Exec_Status = 2;
+                    sells.write_csv();
                     sell.erase(sell.begin() + j);
 
                     return;
                 }
             }
         }
-        Order order(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
         buy.push_back(order);
         sort(buy.begin(), buy.end(), buy_compare);
-        if (exec_status != 3)
-            set(order);
+        if (order.Exec_Status != 3)
+            order.write_csv();
     }
     else // sell
     {
         if (buy.empty())
         {
-            Order order(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
             sell.push_back(order);
             sort(sell.begin(), sell.end(), sell_compare);
-            if (exec_status != 3)
-                set(order);
+            if (order.Exec_Status != 3)
+                order.write_csv();
             return;
         }
         // for (auto buys : buy)
         for (int j = 0; j <= sell.size(); j++)
         {
             Order buys = buy[j];
-            if (buys.Instrument != instrument)
+            if (buys.Instrument != order.Instrument)
                 continue;
-            if (buys.Price > price)
+            if (buys.Price > order.Price)
             {
-                if (buys.Quantity == quantity)
+                if (buys.Quantity == order.Quantity)
                 {
-                    exec_status = 2;
-                    Order order1(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
-                    set(order1);
+                    order.Exec_Status = 2;
+                    order.write_csv();
 
-                    Order order2(buys.Order_Id, buys.Client_Order_Id, buys.Instrument, buys.Side, 2, buys.Quantity, buys.Price, buys.Reason);
-                    set(order2);
+                    buys.Exec_Status = 2;
+                    buys.write_csv();
                     buy.erase(buy.begin() + j);
                     sort(buy.begin(), buy.end(), buy_compare);
 
                     return;
                 }
-                if (buys.Quantity < quantity)
+                if (buys.Quantity < order.Quantity)
                 {
-                    exec_status = 3;
-                    quantity = quantity - buys.Quantity;
-                    Order order1(i, client_order_id, instrument, side, exec_status, buys.Quantity, buys.Price, reason);
-                    set(order1);
+                    order.Exec_Status = 3;
+                    order.Quantity = order.Quantity - buys.Quantity;
 
-                    Order order2(buys.Order_Id, buys.Client_Order_Id, buys.Instrument, buys.Side, 2, buys.Quantity, buys.Price, buys.Reason);
-                    set(order2);
+                    Order order_temp = order;
+                    order_temp.Quantity = buys.Quantity;
+                    order_temp.Price = buys.Price;
+                    order_temp.write_csv();
+
+                    buys.Exec_Status = 2;
+                    buys.write_csv();
                     buy.erase(buy.begin() + j);
                     sort(buy.begin(), buy.end(), buy_compare);
 
-                    if (!buy.empty() || quantity != 0)
-                        calculation(i, client_order_id, instrument, side, exec_status, quantity, price, reason, buy, sell);
+                    if (!buy.empty() || order.Quantity != 0)
+                        calculation(order,buy,sell);
 
-                    if (quantity > 0)
+                    if (order.Quantity > 0)
                     {
-                        sell.push_back(order1);
+                        sell.push_back(order);
                         sort(sell.begin(), sell.end(), sell_compare);
                     }
 
@@ -255,13 +308,13 @@ void calculation(int i, string client_order_id, string &instrument, int side, in
                     // write
                 }
             }
-            else if (buys.Price = price)
+            else if (buys.Price = order.Price)
             {
-                if (buys.Quantity > quantity)
+                if (buys.Quantity > order.Quantity)
                 {
                     // write
                 }
-                else if (buys.Quantity == quantity)
+                else if (buys.Quantity == order.Quantity)
                 {
                     // write
                 }
@@ -272,11 +325,11 @@ void calculation(int i, string client_order_id, string &instrument, int side, in
             }
             else
             {
-                if (buys.Quantity > quantity)
+                if (buys.Quantity > order.Quantity)
                 {
                     // write
                 }
-                else if (buys.Quantity == quantity)
+                else if (buys.Quantity == order.Quantity)
                 {
                     // write
                 }
@@ -286,57 +339,11 @@ void calculation(int i, string client_order_id, string &instrument, int side, in
                 }
             }
         }
-        Order order(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
         sell.push_back(order);
         sort(sell.begin(), sell.end(), sell_compare);
-        if (exec_status != 3)
-            set(order);
+        if (order.Exec_Status != 3)
+            order.write_csv();
     }
-}
-
-int validation(string instrument, int side, int quantity, double price, string &reason)
-{
-    // instrument validation
-    if (instrument != "Rose")
-        if (instrument != "Lavender")
-            if (instrument != "Lotus")
-                if (instrument != "Tulip")
-                    if (instrument != "Orchid")
-                    {
-                        reason = "Invalid Instrument";
-                        return 0;
-                    }
-
-    // side validation
-    if (!(side == 1 || side == 2))
-    {
-        reason = "Invalid Side";
-        return 0;
-    }
-
-    // quantity validation
-    if (quantity < 1000 && quantity >= 10)
-    {
-        if (!(quantity % 10 == 0))
-        {
-            reason = "Invalid Size";
-            return 0;
-        }
-    }
-    else
-    {
-        reason = "Invalid Size";
-        return 0;
-    }
-
-    // price validation
-    if (price <= 0.00)
-    {
-        reason = "Invalid Price";
-        return 0;
-    }
-
-    return 1;
 }
 
 void get_data(vector<Order> &buy, vector<Order> &sell)
@@ -374,38 +381,29 @@ void get_data(vector<Order> &buy, vector<Order> &sell)
         Quantity = atoi(tempString.c_str());
 
         getline(inputString, tempString, ',');
-        // Price = atof(tempString.c_str());
         Price = stold(tempString);
 
         // getline(inputString, Trader_Id, ',');
 
-        int reason_int = validation(Instrument, Side, Quantity, Price, Reason);
+        Order order(i, Client_Order_Id, Instrument, Side, Exec_status, Quantity, Price, Reason);
+
+        int reason_int = order.validation();
         string temp_oid;
 
         if (reason_int)
         {
-            calculation(i, Client_Order_Id, Instrument, Side, Exec_status, Quantity, Price, Reason, buy, sell);
+            calculation(order, buy, sell);
         }
         else
         {
             Exec_status = 1;
-            Order order(i, Client_Order_Id, Instrument, Side, Exec_status, Quantity, Price, Reason);
-            set(order);
+            
+            //set(order);
+            order.write_csv();
         }
 
         line = "";
     }
-}
-
-void set(Order order)
-{
-    order.display();
-    ofstream file("execution_rep.csv", ios::app);
-    if (file.is_open())
-    {
-        file << order.Order_Id << "," << order.Client_Order_Id << "," << order.Instrument << "," << order.Side << "," << order.Exec_Status << "," << order.Quantity << "," << fixed << setprecision(2) << order.Price << "," << order.Reason << "," << order.Transaction_Time << endl;
-    }
-    file.close();
 }
 
 int main()
