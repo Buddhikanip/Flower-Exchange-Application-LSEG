@@ -173,6 +173,21 @@ void calculation(int i, string client_order_id, string &instrument, int side, in
                     // write
                 }
             }
+            if (sells.Price < price)
+            {
+                if (sells.Quantity == quantity)
+                {
+                    exec_status = 2;
+                    Order order1(i, client_order_id, instrument, side, exec_status, quantity, sells.Price, reason);
+                    set(order1);
+
+                    Order order2(sells.Order_Id, sells.Client_Order_Id, sells.Instrument, sells.Side, 2, sells.Quantity, sells.Price, sells.Reason);
+                    set(order2);
+                    sell.erase(sell.begin() + j);
+
+                    return;
+                }
+            }
         }
         Order order(i, client_order_id, instrument, side, exec_status, quantity, price, reason);
         buy.push_back(order);
