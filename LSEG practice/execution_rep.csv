@@ -1,4 +1,7 @@
 Execution_Rep.csv
-Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Trader ID,Reason,Transaction Time
-odd1,aa13,Rose,1,0,50,55.00,TR05,,
-odd2,aa14,Rose,1,0,50,55.00,TR05,,
+Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Reason,Transaction Time
+odd1,aa13,,1,1,100,55.00,Invalid Instrument,
+odd2,aa14,Rose,3,1,100,65.00,Invalid Side,
+odd3,aa15,Lavender,2,1,101,1.00,Invalid Size,
+odd4,aa16,Tulip,1,1,100,-1.00,Invalid Price,
+odd5,aa17,Orchid,1,1,1000,-1.00,Invalid Size,
