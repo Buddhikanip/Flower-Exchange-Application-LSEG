@@ -5,6 +5,8 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <Windows.h>
+#include <strsafe.h>
 
 using namespace std;
 
@@ -23,12 +25,24 @@ public:
     string Transaction_Time;
 
     Order(int, string, string, int, int, int, double, string);
+
     void write_csv();
     void write_csv(int);
     void write_csv(double);
     void write_csv(int, double);
+
     int validation();
+    void trans_time();
 };
+
+void Order::trans_time()
+{
+    SYSTEMTIME systemTime;
+    GetLocalTime(&systemTime);
+    stringstream buffer;
+    buffer << systemTime.wYear << "-" << systemTime.wMonth << "-" << systemTime.wDay << " " << systemTime.wHour << ":" << systemTime.wMinute << ":" << systemTime.wSecond << ":" << systemTime.wMilliseconds;
+    Transaction_Time = buffer.str();
+}
 
 Order::Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price, string reason)
 {
@@ -45,6 +59,7 @@ Order::Order(int i, string client_order_id, string instrument, int side, int exe
 
 void Order::write_csv()
 {
+    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
@@ -55,6 +70,7 @@ void Order::write_csv()
 
 void Order::write_csv(int quantity)
 {
+    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
@@ -65,6 +81,7 @@ void Order::write_csv(int quantity)
 
 void Order::write_csv(double price)
 {
+    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
@@ -75,6 +92,7 @@ void Order::write_csv(double price)
 
 void Order::write_csv(int quantity, double price)
 {
+    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
