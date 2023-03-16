@@ -172,7 +172,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                 order.write_csv();
             return;
         }
-        for (int j = 0; j <= sell.size(); j++)
+        for (int j = 0; j < sell.size(); j++)
         {
             Order sells = sell[j];
             if (sells.Instrument != order.Instrument)
@@ -297,7 +297,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                 order.write_csv();
             return;
         }
-        for (int j = 0; j <= sell.size(); j++)
+        for (int j = 0; j < buy.size(); j++)
         {
             Order buys = buy[j];
             if (buys.Instrument != order.Instrument)
