@@ -62,9 +62,7 @@ void Order::write_csv()
 {
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
-    {
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << trans_time() << endl;
-    }
     file.close();
 }
 
@@ -72,9 +70,7 @@ void Order::write_csv(int quantity)
 {
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
-    {
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << trans_time() << endl;
-    }
     file.close();
 }
 
@@ -82,9 +78,7 @@ void Order::write_csv(double price)
 {
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
-    {
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << trans_time() << endl;
-    }
     file.close();
 }
 
@@ -92,9 +86,7 @@ void Order::write_csv(int quantity, double price)
 {
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
-    {
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << trans_time() << endl;
-    }
     file.close();
 }
 
