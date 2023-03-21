@@ -22,7 +22,7 @@ public:
     double Price;
     // string Trader_Id;
     string Reason;
-    string Transaction_Time;
+    // string Transaction_Time;
 
     Order(int, string, string, int, int, int, double, string);
 
@@ -32,16 +32,17 @@ public:
     void write_csv(int, double);
 
     int validation();
-    void trans_time();
+    string trans_time();
 };
 
-void Order::trans_time()
+string Order::trans_time()
 {
     SYSTEMTIME systemTime;
     GetLocalTime(&systemTime);
     stringstream buffer;
     buffer << systemTime.wYear << "-" << systemTime.wMonth << "-" << systemTime.wDay << " " << systemTime.wHour << ":" << systemTime.wMinute << ":" << systemTime.wSecond << ":" << systemTime.wMilliseconds;
-    Transaction_Time = buffer.str();
+    // Transaction_Time = buffer.str();
+    return buffer.str();
 }
 
 Order::Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price, string reason)
@@ -59,44 +60,40 @@ Order::Order(int i, string client_order_id, string instrument, int side, int exe
 
 void Order::write_csv()
 {
-    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
-        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << Transaction_Time << endl;
+        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << trans_time() << endl;
     }
     file.close();
 }
 
 void Order::write_csv(int quantity)
 {
-    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
-        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << Transaction_Time << endl;
+        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << trans_time() << endl;
     }
     file.close();
 }
 
 void Order::write_csv(double price)
 {
-    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
-        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << Transaction_Time << endl;
+        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << trans_time() << endl;
     }
     file.close();
 }
 
 void Order::write_csv(int quantity, double price)
 {
-    trans_time();
     ofstream file("execution_rep.csv", ios::app);
     if (file.is_open())
     {
-        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << Transaction_Time << endl;
+        file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << trans_time() << endl;
     }
     file.close();
 }
