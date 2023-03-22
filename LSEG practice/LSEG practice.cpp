@@ -184,7 +184,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     sells.Exec_Status = 2;
                     sells.write_csv();
                     sell.erase(sell.begin() + j);
-                    sort(sell.begin(), sell.end(), sell_compare);
+                    // sort(sell.begin(), sell.end(), sell_compare);
 
                     return;
                 }
@@ -197,7 +197,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     sells.Exec_Status = 2;
                     sells.write_csv();
                     sell.erase(sell.begin() + j);
-                    sort(sell.begin(), sell.end(), sell_compare);
+                    // sort(sell.begin(), sell.end(), sell_compare);
 
                     if (!sell.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
@@ -232,7 +232,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     sells.Exec_Status = 2;
                     sells.write_csv();
                     sell.erase(sell.begin() + j);
-                    sort(sell.begin(), sell.end(), sell_compare);
+                    // sort(sell.begin(), sell.end(), sell_compare);
 
                     return;
                 }
@@ -256,7 +256,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     sells.Exec_Status = 2;
                     order.write_csv();
                     sell.erase(sell.begin() + j);
-                    sort(sell.begin(), sell.end(), sell_compare);
+                    // sort(sell.begin(), sell.end(), sell_compare);
 
                     if (!sell.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
@@ -301,7 +301,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     buys.Exec_Status = 2;
                     buys.write_csv();
                     buy.erase(buy.begin() + j);
-                    sort(buy.begin(), buy.end(), buy_compare);
+                    // sort(buy.begin(), buy.end(), buy_compare);
 
                     return;
                 }
@@ -314,7 +314,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     buys.Exec_Status = 2;
                     buys.write_csv();
                     buy.erase(buy.begin() + j);
-                    sort(buy.begin(), buy.end(), buy_compare);
+                    // sort(buy.begin(), buy.end(), buy_compare);
 
                     if (!buy.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
@@ -356,7 +356,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     buys.Exec_Status = 2;
                     buys.write_csv();
                     buy.erase(buy.begin() + j);
-                    sort(buy.begin(), buy.end(), buy_compare);
+                    // sort(buy.begin(), buy.end(), buy_compare);
                 }
                 else // buys.Quantity < order.Quantity
                 {
@@ -367,7 +367,7 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
                     buys.Exec_Status = 2;
                     buys.write_csv();
                     buy.erase(buy.begin() + j);
-                    sort(buy.begin(), buy.end(), buy_compare);
+                    // sort(buy.begin(), buy.end(), buy_compare);
 
                     if (!buy.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
