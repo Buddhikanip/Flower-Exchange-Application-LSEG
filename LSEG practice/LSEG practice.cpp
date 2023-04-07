@@ -24,7 +24,7 @@ public:
     string Reason;
     // string Transaction_Time;
 
-    Order(int, string, string, int, int, int, double, string);
+    Order(int, string, string, int, int, int, double);
 
     void write_csv();
     void write_csv(int);
@@ -45,7 +45,7 @@ string Order::trans_time()
     return buffer.str();
 }
 
-Order::Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price, string reason)
+Order::Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price)
 {
     Order_Id = "odd" + to_string(i);
     Client_Order_Id = client_order_id;
@@ -55,7 +55,7 @@ Order::Order(int i, string client_order_id, string instrument, int side, int exe
     Quantity = quantity;
     Price = price;
     // Trader_Id = trader_id;
-    Reason = reason;
+    Reason = "";
 }
 
 void Order::write_csv()
@@ -420,7 +420,7 @@ void get_data(vector<Order> &buy, vector<Order> &sell)
         // string Trader_Id;
         string tempString;
         int Exec_status = 0;
-        string Reason = "";
+        // string Reason = "";
 
         getline(inputString, Client_Order_Id, ',');
         getline(inputString, Instrument, ',');
@@ -436,7 +436,7 @@ void get_data(vector<Order> &buy, vector<Order> &sell)
 
         // getline(inputString, Trader_Id, ',');
 
-        Order order(i, Client_Order_Id, Instrument, Side, Exec_status, Quantity, Price, Reason);
+        Order order(i, Client_Order_Id, Instrument, Side, Exec_status, Quantity, Price);
 
         if (order.validation())
             calculation(order, buy, sell);
