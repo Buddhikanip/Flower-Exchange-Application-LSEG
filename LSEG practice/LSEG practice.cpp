@@ -35,16 +35,6 @@ public:
     string trans_time();
 };
 
-string Order::trans_time()
-{
-    SYSTEMTIME systemTime;
-    GetLocalTime(&systemTime);
-    stringstream buffer;
-    buffer << systemTime.wYear << "-" << systemTime.wMonth << "-" << systemTime.wDay << " " << systemTime.wHour << ":" << systemTime.wMinute << ":" << systemTime.wSecond << ":" << systemTime.wMilliseconds;
-    // Transaction_Time = buffer.str();
-    return buffer.str();
-}
-
 Order::Order(int i, string client_order_id, string instrument, int side, int exec_status, int quantity, double price)
 {
     Order_Id = "odd" + to_string(i);
@@ -58,6 +48,16 @@ Order::Order(int i, string client_order_id, string instrument, int side, int exe
     Reason = "";
 }
 
+string Order::trans_time()
+{
+    SYSTEMTIME systemTime;
+    GetLocalTime(&systemTime);
+    stringstream buffer;
+    buffer << systemTime.wYear << "-" << systemTime.wMonth << "-" << systemTime.wDay << " " << systemTime.wHour << ":" << systemTime.wMinute << ":" << systemTime.wSecond << ":" << systemTime.wMilliseconds;
+    // Transaction_Time = buffer.str();
+    return buffer.str();
+}
+
 void Order::write_csv()
 {
     ofstream file("execution_rep.csv", ios::app);
@@ -65,7 +65,6 @@ void Order::write_csv()
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << trans_time() << endl;
     file.close();
 }
-
 void Order::write_csv(int quantity)
 {
     ofstream file("execution_rep.csv", ios::app);
@@ -73,7 +72,6 @@ void Order::write_csv(int quantity)
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << quantity << "," << fixed << setprecision(2) << Price << "," << Reason << "," << trans_time() << endl;
     file.close();
 }
-
 void Order::write_csv(double price)
 {
     ofstream file("execution_rep.csv", ios::app);
@@ -81,7 +79,6 @@ void Order::write_csv(double price)
         file << Order_Id << "," << Client_Order_Id << "," << Instrument << "," << Side << "," << Exec_Status << "," << Quantity << "," << fixed << setprecision(2) << price << "," << Reason << "," << trans_time() << endl;
     file.close();
 }
-
 void Order::write_csv(int quantity, double price)
 {
     ofstream file("execution_rep.csv", ios::app);
@@ -149,7 +146,7 @@ bool sell_compare(Order a, Order b)
     return a.Price < b.Price;
 }
 
-void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
+void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
 {
     if (order.Side == 1) // buy
     {
@@ -164,8 +161,6 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
         for (int j = 0; j < sell.size(); j++)
         {
             Order sells = sell[j];
-            if (sells.Instrument != order.Instrument)
-                continue;
             if (sells.Price > order.Price)
             {
                 buy.push_back(order);
@@ -289,8 +284,6 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
         for (int j = 0; j < buy.size(); j++)
         {
             Order buys = buy[j];
-            if (buys.Instrument != order.Instrument)
-                continue;
             if (buys.Price > order.Price)
             {
                 if (buys.Quantity == order.Quantity)
@@ -397,8 +390,37 @@ void calculation(Order &order, vector<Order> &buy, vector<Order> &sell)
     }
 }
 
-void get_data(vector<Order> &buy, vector<Order> &sell)
+int main()
 {
+    // vector<Order> buy;
+    // vector<Order> sell;
+
+    vector<Order> Rose_buy;
+    vector<Order> Rose_sell;
+
+    vector<Order> Lavender_buy;
+    vector<Order> Lavender_sell;
+
+    vector<Order> Lotus_buy;
+    vector<Order> Lotus_sell;
+
+    vector<Order> Tulip_buy;
+    vector<Order> Tulip_sell;
+
+    vector<Order> Orchid_buy;
+    vector<Order> Orchid_sell;
+
+    ofstream file("execution_rep.csv", ofstream::trunc);
+    if (file.is_open())
+    {
+        file << "Execution_Rep.csv" << endl;
+        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Reason,Transaction Time" << endl;
+    }
+    else
+        return 0;
+
+    file.close();
+
     int i = 0;
     ifstream inputFile;
     inputFile.open("orders.csv");
@@ -408,6 +430,7 @@ void get_data(vector<Order> &buy, vector<Order> &sell)
     line = "";
     getline(inputFile, line); // for headers
     line = "";
+
     while (getline(inputFile, line))
     {
         i++;
@@ -439,28 +462,23 @@ void get_data(vector<Order> &buy, vector<Order> &sell)
         Order order(i, Client_Order_Id, Instrument, Side, Exec_status, Quantity, Price);
 
         if (order.validation())
-            calculation(order, buy, sell);
+        {
+            if (Instrument == "Rose")
+                calculation(order, Rose_buy, Rose_sell);
+            else if (Instrument == "Lavender")
+                calculation(order, Lavender_buy, Lavender_sell);
+            else if (Instrument == "Lotus")
+                calculation(order, Lotus_buy, Lotus_sell);
+            else if (Instrument == "Tulip")
+                calculation(order, Tulip_buy, Tulip_sell);
+            else if (Instrument == "Orchid")
+                calculation(order, Orchid_buy, Orchid_sell);
+        }
         else
             order.write_csv();
 
         line = "";
     }
-}
-
-int main()
-{
-    vector<Order> buy;
-    vector<Order> sell;
-
-    ofstream file("execution_rep.csv", ofstream::trunc);
-    if (file.is_open())
-    {
-        file << "Execution_Rep.csv" << endl;
-        file << "Order ID,Client Order ID,Instrument,Side,Exec Status,Quantity,Price,Reason,Transaction Time" << endl;
-    }
-    file.close();
-
-    get_data(buy, sell);
 
     return 0;
 }
