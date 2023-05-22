@@ -160,7 +160,7 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
         }
         for (int j = 0; j < sell.size(); j++)
         {
-            Order sells = sell[j];
+            Order &sells = sell[j];
             if (sells.Price > order.Price)
             {
                 buy.push_back(order);
@@ -197,11 +197,11 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     if (!sell.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
 
-                    if (order.Quantity > 0)
+                    /*if (order.Quantity > 0)
                     {
                         buy.push_back(order);
                         sort(buy.begin(), buy.end(), buy_compare);
-                    }
+                    }*/
 
                     return;
                 }
@@ -249,18 +249,18 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     order.write_csv(sells.Quantity, sells.Price);
 
                     sells.Exec_Status = 2;
-                    order.write_csv();
+                    sells.write_csv();
                     sell.erase(sell.begin() + j);
                     // sort(sell.begin(), sell.end(), sell_compare);
 
                     if (!sell.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
 
-                    if (order.Quantity > 0)
+                    /*if (order.Quantity > 0)
                     {
                         buy.push_back(order);
                         sort(buy.begin(), buy.end(), buy_compare);
-                    }
+                    }*/
 
                     return;
                 }
@@ -283,7 +283,7 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
         }
         for (int j = 0; j < buy.size(); j++)
         {
-            Order buys = buy[j];
+            Order &buys = buy[j];
             if (buys.Price > order.Price)
             {
                 if (buys.Quantity == order.Quantity)
@@ -312,11 +312,11 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     if (!buy.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
 
-                    if (order.Quantity > 0)
+                    /*if (order.Quantity > 0)
                     {
                         sell.push_back(order);
                         sort(sell.begin(), sell.end(), sell_compare);
-                    }
+                    }*/
 
                     return;
                 }
@@ -328,6 +328,8 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     buys.Exec_Status = 3;
                     buys.Quantity = buys.Quantity - order.Quantity;
                     buys.write_csv(order.Quantity);
+
+                    return;
                 }
             }
             else if (buys.Price == order.Price)
@@ -340,6 +342,8 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     buys.Exec_Status = 3;
                     buys.Quantity = buys.Quantity - order.Quantity;
                     buys.write_csv(order.Quantity);
+
+                    return;
                 }
                 else if (buys.Quantity == order.Quantity)
                 {
@@ -350,6 +354,8 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     buys.write_csv();
                     buy.erase(buy.begin() + j);
                     // sort(buy.begin(), buy.end(), buy_compare);
+
+                    return;
                 }
                 else // buys.Quantity < order.Quantity
                 {
@@ -365,11 +371,11 @@ void calculation(Order& order, vector<Order>& buy, vector<Order>& sell)
                     if (!buy.empty() || order.Quantity != 0)
                         calculation(order, buy, sell);
 
-                    if (order.Quantity > 0)
+                    /*if (order.Quantity > 0)
                     {
                         sell.push_back(order);
                         sort(sell.begin(), sell.end(), sell_compare);
-                    }
+                    }*/
 
                     return;
                 }
