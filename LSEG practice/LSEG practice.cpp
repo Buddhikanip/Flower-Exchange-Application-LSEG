@@ -90,16 +90,16 @@ void Order::write_csv(int quantity, double price)
 int Order::validation()
 {
     // instrument validation
-    if (Instrument != "Rose")
-        if (Instrument != "Lavender")
-            if (Instrument != "Lotus")
-                if (Instrument != "Tulip")
-                    if (Instrument != "Orchid")
-                    {
-                        Exec_Status = 1;
-                        Reason = "Invalid Instrument";
-                        return 0;
-                    }
+    // if (Instrument != "Rose")
+    //     if (Instrument != "Lavender")
+    //         if (Instrument != "Lotus")
+    //             if (Instrument != "Tulip")
+    //                 if (Instrument != "Orchid")
+    //                 {
+    //                     Exec_Status = 1;
+    //                     Reason = "Invalid Instrument";
+    //                     return 0;
+    //                 }
 
     // side validation
     if (!(Side == 1 || Side == 2))
@@ -473,6 +473,12 @@ int main()
                 calculation(order, Tulip_buy, Tulip_sell);
             else if (Instrument == "Orchid")
                 calculation(order, Orchid_buy, Orchid_sell);
+            else
+            {
+                order.Reason="Invalid Instrument";
+                order.write_csv();
+            }
+
         }
         else
             order.write_csv();
